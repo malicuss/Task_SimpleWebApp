@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Products";
+    Layout = "_Layout";
+}
+<h3>@ViewData["Title"]</h3>
+<table>
+    <th>@nameof(Product.ProductId)</th>
+    <th>@nameof(Product.ProductName)</th>
+    <th>@nameof(Product.SupplierId)</th>
+    <th>@nameof(Product.CategoryId)</th>
+    <th>@nameof(Product.QuantityPerUnit)</th>
+    <th>@nameof(Product.UnitPrice)</th>
+    <th>@nameof(Product.UnitsInStock)</th>
+    <th>@nameof(Product.UnitsOnOrder)</th>
+    <th>@nameof(Product.ReorderLevel)</th>
+    <th>@nameof(Product.Discontinued)</th>
+    @foreach (var product in Model)
+    {
+        <tr class="custom">
+            <td>@product.ProductId</td>
+            <td>@Html.ActionLink(@product.ProductName,"AddUpdateProduct","Home",new { product.ProductId },null)</td> 
+            <td>@product.SupplierId</td>
+            <td>@product.CategoryId</td>
+            <td>@product.QuantityPerUnit</td>
+            <td>@product.UnitPrice</td>
+            <td>@product.UnitsInStock</td>
+            <td>@product.UnitsOnOrder</td>
+            <td>@product.ReorderLevel</td>
+            <td>@Html.CheckBoxFor(x=>product.Discontinued,new { @disabled = "disabled", @class = "class-chb"})</td>
+        </tr>
+    }
+</table>
+<button onclick="location.href='@Url.Action("AddUpdateProduct", "Home",0)'">Create product</button>

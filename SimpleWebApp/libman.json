@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.2.2",
+      "destination": "wwwroot\\lib\\bootstrap"
+    },
+    {
+      "provider": "unpkg",
+      "library": "jquery-ajax-unobtrusive@3.2.6",
+      "destination": "wwwroot\\lib\\jquery-ajax-unobtrusive"
+    },
+    {
+      "library": "jquery@3.6.1",
+      "destination": "wwwroot\\lib\\jquery"
+    }
+  ]
+}

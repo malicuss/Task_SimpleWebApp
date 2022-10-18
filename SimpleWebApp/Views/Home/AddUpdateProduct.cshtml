@@ -1,0 +1,47 @@
+﻿@model SimpleWebApp.Models.Product
+@{
+    Layout = "_Layout";
+    
+}
+    @using (Html.BeginForm("AddUpdateProduct","Home", FormMethod.Post))
+    {
+        <table class="custom">
+            @Html.ValidationSummary()
+            <tr>
+                <td class = "custom">@Html.LabelFor(x => x.ProductId)</td>
+                <td class = "custom">
+                    @Html.TextBoxFor(x => x.ProductId, new { @readonly = "readonly" })
+                </td>
+            </tr>
+            <tr>
+                <td class = "custom">@Html.Label(nameof(Model.ProductName))</td>
+                <td class = "custom">@Html.TextBoxFor(x => x.ProductName)</td>
+            </tr>
+            <tr>
+                <td class = "custom">@Html.Label(nameof(Model.Categories))</td>
+                <td class = "custom">@Html.DropDownListFor(x => x.CategoryId,
+                        Model.Categories, "not selected")</td>
+            </tr>
+            <tr>
+                <td class = "custom">@Html.Label(nameof(Model.Suppliers))</td>
+                <td class = "custom">@Html.DropDownListFor(x => x.SupplierId,
+                        Model.Suppliers, "not selected",new {@class=""})</td>
+            </tr>
+            <tr><td class = "custom">@Html.Label("QuantityPerUnit")</td>
+                <td class = "custom"> @Html.TextBoxFor(x => x.QuantityPerUnit)</td></tr>
+            <tr><td class = "custom">@Html.Label("UnitPrice")</td>
+                <td class = "custom"> @Html.TextBoxFor(x => x.UnitPrice)</td></tr>
+            <tr><td class = "custom">@Html.Label("UnitsInStock")</td>
+                <td class = "custom"> @Html.TextBoxFor(x => x.UnitsInStock)</td></tr>
+            <tr><td class = "custom">@Html.Label("UnitsOnOrder")</td>
+                <td class = "custom"> @Html.TextBoxFor(x => x.UnitsOnOrder)</td></tr>
+            <tr><td class = "custom">@Html.Label("ReorderLevel")</td>
+                <td class = "custom"> @Html.TextBoxFor(x => x.ReorderLevel)</td></tr>
+            <tr><td class = "custom">@Html.Label("Discontinued")</td>
+                <td class = "custom"> @Html.CheckBoxFor(x => x.Discontinued)</td></tr>
+        </table>
+        <p>
+            <button type="submit">Save product</button>
+        </p>
+        
+    }

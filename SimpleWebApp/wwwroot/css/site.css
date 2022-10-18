@@ -1,0 +1,67 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+table{
+  border-radius: 15px;
+}
+
+table, th, td{
+  border-spacing: 5px;
+  border: transparent;
+  padding: 4px;
+  text-align: center;
+  color: darkblue;
+}
+th{
+  padding: 5px;
+}
+tbody tr.custom:nth-child(even){
+  background-color: #b6effb;
+  color: transparent;
+}
+
+table.custom, th.custom, td.custom{
+  border: transparent;
+  padding: 5px 10px 7px 0;
+  color: darkblue;
+  text-align: left;
+}
+
+button{
+  border: 2px solid royalblue;
+  background-color: whitesmoke;
+  height: 50px;
+  width: 150px;
+  margin: 5px 10px 5px 0;
+  padding: 5px 15px 10px 15px;
+  color: royalblue;
+  transition-duration: 0.2s;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+}
+button:hover{
+  background-color: royalblue;
+  color: whitesmoke;
+}
+
+input.class-chb{
+  width: 25px;
+  height: 25px;
+}

@@ -1,0 +1,17 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Categories";
+}
+@model IEnumerable<Category>
+<h3>@ViewData["Title"]</h3>
+<table class="custom">
+    <th class="custom">Name</th>
+    <th class="custom">Description</th>
+    @foreach (var cat in Model)
+    {
+        <tr>
+            <td class="custom">@cat.CategoryName</td>
+            <td class="custom">@cat.Description</td>
+        </tr>
+    }
+</table>

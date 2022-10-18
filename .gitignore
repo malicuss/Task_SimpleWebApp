@@ -1,0 +1,6 @@
+﻿/SimpleWebApp/Logs/
+/SimpleWebApp/bin/
+/SimpleWebApp/obj/
+/SimpleWebApp/wwwroot/lib/
+.idea
+.vs

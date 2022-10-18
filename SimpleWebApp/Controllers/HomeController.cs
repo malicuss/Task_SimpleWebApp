@@ -23,49 +23,9 @@ public class HomeController : Controller
 
     public IActionResult Index()
         => View();
-    
-    public IActionResult Products()
-        => View(_context.Products.Take(_productsToShow));
-    
+
     public IActionResult Categories()
-        => View(_context.Categories);
-    
-
-    [HttpGet]
-    public IActionResult AddUpdateProduct(int productId)
-    {
-        var product = _context.Products.FirstOrDefault(x => x.ProductId == productId) ?? new Product();
-        product.UpdateDependantProperties(_context);
-        return View(product);
-    }
-
-    [HttpPost]
-    public IActionResult AddUpdateProduct(Product p)
-    {
-        var product = _context.Products.FirstOrDefault(x => x.ProductId == p.ProductId);
-        if (product == null)
-        {
-            if (!ModelState.IsValid)
-            {
-                p.UpdateDependantProperties(_context);
-                return View(p);
-            }
-            _context.Products.AddAsync(p).GetAwaiter().GetResult();
-        }
-        else
-        {
-            if (!ModelState.IsValid)
-            {
-                p.UpdateDependantProperties(_context);
-                return View(p);
-            }
-            product.UpdateProduct(p);
-            _context.Products.Update(product);
-        }
-
-        _context.SaveChangesAsync().GetAwaiter().GetResult();
-        return RedirectToAction("Products","Home");
-    }
+        => View(_context.Categories.ToList());
 
     public IActionResult ShowMeException()
     {

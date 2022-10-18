@@ -19,7 +19,7 @@
     {
         <tr class="custom">
             <td>@product.ProductId</td>
-            <td>@Html.ActionLink(@product.ProductName,"AddUpdateProduct","Home",new { product.ProductId },null)</td> 
+            <td>@Html.ActionLink(@product.ProductName,"AddUpdateProduct","Products",new { product.ProductId },null)</td> 
             <td>@product.SupplierId</td>
             <td>@product.CategoryId</td>
             <td>@product.QuantityPerUnit</td>
@@ -31,4 +31,4 @@
         </tr>
     }
 </table>
-<button onclick="location.href='@Url.Action("AddUpdateProduct", "Home",0)'">Create product</button>
+<button onclick="location.href='@Url.Action("AddUpdateProduct", "Products",0)'">Create product</button>

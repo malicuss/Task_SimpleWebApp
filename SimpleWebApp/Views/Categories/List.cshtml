@@ -1,16 +1,24 @@
 ﻿@{
     Layout = "_Layout";
     ViewData["Title"] = "Categories";
+    
 }
 @model IEnumerable<Category>
 <h3>@ViewData["Title"]</h3>
 <table class="custom">
+    <th class="custom"> </th>
     <th class="custom">Name</th>
     <th class="custom">Description</th>
     @foreach (var cat in Model)
     {
         <tr>
-            <td class="custom">@cat.CategoryName</td>
+            <td class="custom">
+                @{
+                    var k = ViewData[cat.CategoryId.ToString()];
+                }
+                <img height="100" width="100" src="@k" alt="">
+            </td>
+            <td class="custom">@Html.ActionLink(cat.CategoryName, "Image", "Categories", new { imageId = cat.CategoryId })</td>
             <td class="custom">@cat.Description</td>
         </tr>
     }

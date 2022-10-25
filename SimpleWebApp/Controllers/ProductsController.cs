@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
 
 namespace SimpleWebApp.Controllers;
@@ -7,22 +9,28 @@ public class ProductsController : Controller
 {
     private readonly ILogger<ProductsController> _logger;
     private readonly NorthwindContext _context;
-    private int _productsToShow = 0;
+    private readonly int _productsToShow;
 
     public ProductsController(
         ILogger<ProductsController> logger,
         NorthwindContext context,
-        IConfiguration configuration)
+        IOptions<AppOptions> opt)
     {
         _logger = logger;
         _context = context;
-        _productsToShow = configuration.GetValue<int>("ProductsToShow");
+        _productsToShow = opt.Value.MaxProductsToShow;
     }
 
     [HttpGet]
     public IActionResult List()
-        =>View(_context.Products.Take(_productsToShow));
-    
+    {
+        if (_productsToShow > 0)
+        {
+            return View(_context.Products.Take(_productsToShow));
+        }
+        return View(_context.Products);
+    }
+
     [HttpGet]
     public IActionResult AddUpdateProduct(int productId)
     {

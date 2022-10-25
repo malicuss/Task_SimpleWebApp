@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
 
 //configuring Serilog
@@ -14,11 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Host.UseSerilog();  //inject Serilog
-
+builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.MaxProducts));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

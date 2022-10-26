@@ -43,24 +43,6 @@ table.custom, th.custom, td.custom{
   text-align: left;
 }
 
-button{
-  border: 2px solid royalblue;
-  background-color: whitesmoke;
-  height: 50px;
-  width: 150px;
-  margin: 5px 10px 5px 0;
-  padding: 5px 15px 10px 15px;
-  color: royalblue;
-  transition-duration: 0.2s;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-}
-button:hover{
-  background-color: royalblue;
-  color: whitesmoke;
-}
-
 input.class-chb{
   width: 25px;
   height: 25px;

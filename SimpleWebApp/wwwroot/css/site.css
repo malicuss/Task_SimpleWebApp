@@ -21,6 +21,18 @@ table{
   border-radius: 15px;
 }
 
+li{
+  margin-left: 25px;
+}
+
+button{
+  margin: 15px 15px 15px 0;
+  background-color: #b5ffc9;
+  color: #1d522b;
+  border-color: #1d522b;
+  border-radius: 5px;
+  border-width: medium;
+}
 table, th, td{
   border-spacing: 5px;
   border: transparent;
@@ -32,7 +44,7 @@ th{
   padding: 5px;
 }
 tbody tr.custom:nth-child(even){
-  background-color: #b6effb;
+  background-color: #b5ffc9;
   color: transparent;
 }
 

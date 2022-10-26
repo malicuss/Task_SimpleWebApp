@@ -53,7 +53,7 @@ public class CategoriesController : Controller
             throw new Exception("smthgowrng");
         if (file.Length > 300000)
         {
-            ModelState.AddModelError("File", "File is too large");
+            ModelState.AddModelError("File", "File is exceed 300 kB");
             return View(imageId);
         }
 

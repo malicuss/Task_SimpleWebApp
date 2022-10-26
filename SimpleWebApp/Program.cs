@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Middleware;
-using Serilog.Events;
-using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
 
 //configuring Serilog
@@ -51,5 +49,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseMiddleware<ImageCache>();
+//app.UseMiddleware<ImageCache>();
 app.Run();

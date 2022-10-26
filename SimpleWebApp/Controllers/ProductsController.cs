@@ -15,13 +15,11 @@ public class ProductsController : Controller
         ILogger<ProductsController> logger,
         IDbContextWrapper dbContextWrapper,
         IConfiguration configuration,
-        NorthwindContext context,
         IOptions<AppOptions> opt)
     {
         _logger = logger;
         _dbContextWrapper = dbContextWrapper;
         _productsToShow = configuration.GetValue<int>("ProductsToShow");
-        _context = context;
         _productsToShow = opt.Value.MaxProductsToShow;
     }
 

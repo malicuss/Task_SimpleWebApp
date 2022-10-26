@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Middleware;
+using Serilog.Events;
+using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
 
 //configuring Serilog
@@ -14,6 +16,8 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
+Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
@@ -21,6 +25,7 @@ builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Host.UseSerilog();  //inject Serilog
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
+builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.MaxProducts));
 
 var app = builder.Build();
 

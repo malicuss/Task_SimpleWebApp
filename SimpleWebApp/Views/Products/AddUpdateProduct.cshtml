@@ -8,10 +8,7 @@
         <table class="custom">
             @Html.ValidationSummary()
             <tr>
-                <td class = "custom">@Html.LabelFor(x => x.ProductId)</td>
-                <td class = "custom">
-                    @Html.TextBoxFor(x => x.ProductId, new { @readonly = "readonly" })
-                </td>
+                <td>@Html.HiddenFor(x=>x.ProductId)</td>
             </tr>
             <tr>
                 <td class = "custom">@Html.Label(nameof(Model.ProductName))</td>

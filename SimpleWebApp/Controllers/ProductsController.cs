@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleWebApp.Helpers;
+using Microsoft.Extensions.Options;
 using SimpleWebApp.Models;
 
 namespace SimpleWebApp.Controllers;
@@ -13,11 +14,15 @@ public class ProductsController : Controller
     public ProductsController(
         ILogger<ProductsController> logger,
         IDbContextWrapper dbContextWrapper,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        NorthwindContext context,
+        IOptions<AppOptions> opt)
     {
         _logger = logger;
         _dbContextWrapper = dbContextWrapper;
         _productsToShow = configuration.GetValue<int>("ProductsToShow");
+        _context = context;
+        _productsToShow = opt.Value.MaxProductsToShow;
     }
 
     [HttpGet]

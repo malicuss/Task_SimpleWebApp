@@ -3,6 +3,7 @@ using Serilog;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Middleware;
 using SimpleWebApp.Models;
+using SimpleWebApp.Services;
 
 //configuring Serilog
 Log.Logger = new LoggerConfiguration()
@@ -17,14 +18,18 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Host.UseSerilog();  //inject Serilog
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
-builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.MaxProducts));
-
+builder.Services.AddTransient<ICacher, ImageCacher>();
+builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
+builder.Services.AddControllersWithViews(opt =>
+{
+    opt.Filters.Add<ActionLoggingFilter>();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,5 +54,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-//app.UseMiddleware<ImageCache>();
+app.UseMiddleware<ImageCache>();
 app.Run();

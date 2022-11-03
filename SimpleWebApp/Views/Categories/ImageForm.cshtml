@@ -1,0 +1,12 @@
+﻿@{
+    Layout = "_Layout";
+    var k = ViewData["imgString"];
+}
+<p>
+    <img height="100" width="100" src="@k" alt="">
+</p>
+<form method="post" enctype="multipart/form-data">
+    @Html.ValidationSummary()
+    <input type="file" name="file" class="form-control"/>
+    <button type="submit" class="form-control">Upload File</button>
+</form>

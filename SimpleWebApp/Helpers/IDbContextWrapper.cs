@@ -10,6 +10,7 @@ public interface IDbContextWrapper
     Task<Supplier> GetSupplierFromDb(int supplierId);
     List<Product> GetProductsFromDb(int numberOfProducts);
     Task<Product> GetProductFromDb(int productId);
+    Task<Product> ProductToAddOrUpdate(int productId);
     Task<bool> AddOrUpdateProduct(Product p);
     Task<bool> AddUpdateCategory(Category p);
 }

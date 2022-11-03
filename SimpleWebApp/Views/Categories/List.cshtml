@@ -18,7 +18,7 @@
                 }
                 <img height="100" width="100" src="@k" alt="">
             </td>
-            <td class="custom">@Html.ActionLink(cat.CategoryName, "Image", "Categories", new { imageId = cat.CategoryId })</td>
+            <td class="custom">@Html.ActionLink(cat.CategoryName, "ImageForm", "Categories", new { imageId = cat.CategoryId })</td>
             <td class="custom">@cat.Description</td>
         </tr>
     }

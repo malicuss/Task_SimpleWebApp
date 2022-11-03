@@ -2,5 +2,7 @@
 /SimpleWebApp/bin/
 /SimpleWebApp/obj/
 /SimpleWebApp/wwwroot/lib/
+/TestProjects/bin/
+/TestProjects/obj/
 .idea
 .vs

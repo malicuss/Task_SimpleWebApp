@@ -1,4 +1,6 @@
-﻿namespace SimpleWebApp.Middleware;
+﻿using SimpleWebApp.Helpers;
+
+namespace SimpleWebApp.Middleware;
 
 public class ImageCache
 {
@@ -11,16 +13,20 @@ public class ImageCache
     //      Cache expiration time (if no requests during this time, cache cleaned) 
     
     private readonly RequestDelegate _next;
+    private readonly ICacher _cacher;
 
-    public ImageCache(RequestDelegate next )
+    public ImageCache(RequestDelegate next, ICacher cacher )
     {
         _next = next;
+        _cacher = cacher;
     }
 
-    public async Task Invoke(HttpContext context, string arg)
+    public async Task Invoke(HttpContext context)
     {
         var req = context.Request;
+        
         var res = context.Response;
+        var z = res.ContentType;
         await _next(context);
         var req1 = context.Request;
         var res1 = context.Response;

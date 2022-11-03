@@ -9,17 +9,15 @@ public class ProductsController : Controller
 {
     private readonly ILogger<ProductsController> _logger;
     private readonly IDbContextWrapper _dbContextWrapper;
-    private int _productsToShow = 0;
+    private readonly int _productsToShow = 0;
 
     public ProductsController(
         ILogger<ProductsController> logger,
         IDbContextWrapper dbContextWrapper,
-        IConfiguration configuration,
         IOptions<AppOptions> opt)
     {
         _logger = logger;
         _dbContextWrapper = dbContextWrapper;
-        _productsToShow = configuration.GetValue<int>("ProductsToShow");
         _productsToShow = opt.Value.MaxProductsToShow;
     }
 
@@ -30,7 +28,7 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult AddUpdateProduct(int productId)
     {
-        var product = _dbContextWrapper.GetProductFromDb(productId).GetAwaiter().GetResult();
+        var product = _dbContextWrapper.ProductToAddOrUpdate(productId).GetAwaiter().GetResult();
         return View(product);
     }
 

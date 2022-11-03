@@ -25,7 +25,7 @@ public class DbContextWrapper : IDbContextWrapper
        var res = await _context.Categories.FirstOrDefaultAsync(
            x=>x.CategoryId == categoryId);
        if (res == null)
-           throw new Exception($"No supplier with such id {categoryId}");
+           throw new CategoryNotFoundException($"No Category with such id {categoryId}");
        return res;
    }
 
@@ -37,7 +37,7 @@ public class DbContextWrapper : IDbContextWrapper
         var res = await _context.Suppliers.FirstOrDefaultAsync(
             x=>x.SupplierId == supplierId);
         if (res == null)
-            throw new Exception($"No supplier with such id {supplierId}");
+            throw new SupplierNotFoundException($"No supplier with such id {supplierId}");
         return res;
     }
 
@@ -49,8 +49,23 @@ public class DbContextWrapper : IDbContextWrapper
         var res = await _context.Products.FirstOrDefaultAsync(
             x=>x.ProductId == productId);
         if (res == null)
-            res = new Product{ProductId = 0};
-        UpdateDependantProperties(res);
+            throw new ProductNotFoundException($"No product found with such id:{productId}");
+        return res;
+    }
+
+    public async Task<Product> ProductToAddOrUpdate(int productId)
+    {
+        Product res;
+        try
+        {
+            res = await GetProductFromDb(productId);
+        }
+        catch (ProductNotFoundException e)
+        {
+            res = new Product { ProductId = 0 };
+            UpdateDependantProperties(res);
+        }
+
         return res;
     }
 

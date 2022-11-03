@@ -1,8 +1,7 @@
 ﻿@{
     Layout = "_Layout";
+    var img = ViewData["imgString"];
 }
-<form method="post" enctype="multipart/form-data">
-    @Html.ValidationSummary()
-    <input type="file" name="file" class="form-control"/>
-    <button type="submit" class="form-control">Upload File</button>
-</form>
+<p>
+    <img height="100" width="100" src="@img" alt="No image with such Id was found">
+</p>

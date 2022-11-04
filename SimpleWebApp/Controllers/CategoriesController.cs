@@ -19,6 +19,9 @@ public class CategoriesController : Controller
         _logger = logger;
     }
 
+    [Route("{controller}/{action}")]
+    [Route("{controller}")]
+    [HttpGet]
     public IActionResult List()
     {
         foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
@@ -32,8 +35,7 @@ public class CategoriesController : Controller
 
         return View(_dbContextWrapper.GetCategoriesFromDb());
     }
-
-    [Route("{controller}/{action}/{imageId}")]
+    
     [HttpGet]
     public IActionResult ImageForm(int imageId)
     {
@@ -45,7 +47,8 @@ public class CategoriesController : Controller
         }
         catch (CategoryNotFoundException e)
         {
-            //left for good. Do not know what to do here.
+            ModelState.AddModelError("Category", "No Category with such Id.");
+            return View(imageId);
         }
         catch (Exception e)
         {
@@ -56,7 +59,6 @@ public class CategoriesController : Controller
         return View(imageId);
     }
 
-    [Route("{controller}/{action}/{imageId}")]
     [HttpPost]
     public async Task<IActionResult> ImageForm(int imageId, IFormFile file)
     {
@@ -64,11 +66,15 @@ public class CategoriesController : Controller
         {
             ModelState.AddModelError("File", "File was not found. Please try again.");
             return View(imageId);
-        }
-
+        } 
         if (file.Length > 300000)
         {
             ModelState.AddModelError("File", "File is exceed 300 kB");
+            return View(imageId);
+        }
+        if (imageId==null)
+        {
+            ModelState.AddModelError("Category", "No Category with such Id.");
             return View(imageId);
         }
 

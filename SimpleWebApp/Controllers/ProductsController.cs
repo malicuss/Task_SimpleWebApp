@@ -21,6 +21,8 @@ public class ProductsController : Controller
         _productsToShow = opt.Value.MaxProductsToShow;
     }
 
+    [Route("{controller}/{action}")]
+    [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
         =>View(_dbContextWrapper.GetProductsFromDb(_productsToShow));

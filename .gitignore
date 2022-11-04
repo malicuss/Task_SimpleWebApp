@@ -2,7 +2,8 @@
 /SimpleWebApp/bin/
 /SimpleWebApp/obj/
 /SimpleWebApp/wwwroot/lib/
-/TestProjects/bin/
-/TestProjects/obj/
+/TestProject/bin/
+/TestProject/obj/
 .idea
 .vs
+.user

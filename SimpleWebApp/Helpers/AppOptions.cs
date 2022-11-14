@@ -6,6 +6,7 @@ public class AppOptions
 
     public int MaxProductsToShow { get; set; }
     public int CacheLifeTime { get; set; }
+    public string CacheRootPath { get; set; }
     public int MaxImagesInCache { get; set; }
     public bool LogActionParameters { get; set; }
 }

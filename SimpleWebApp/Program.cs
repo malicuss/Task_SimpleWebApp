@@ -24,7 +24,7 @@ builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Host.UseSerilog();  //inject Serilog
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
-builder.Services.AddTransient<ICacher, ImageCacher>();
+builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
 builder.Services.AddControllersWithViews(opt =>
 {

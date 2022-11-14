@@ -93,10 +93,11 @@ public class CategoriesController : Controller
             ViewData["imgString"] = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult()
                 .GetBase64Image();
+            //Response.ContentType = "Image/png";
         }
         catch (CategoryNotFoundException e)
         {
-            //left for good. Do not know what to do here.
+            _logger.LogError(e,"No Category with such Id");
         }
         catch (Exception e)
         {

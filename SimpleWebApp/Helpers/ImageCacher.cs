@@ -14,8 +14,10 @@ public class ImageCacher: ICacher
         _logger = logger;
         _imageMaxCount = options.Value.MaxImagesInCache;
         _fileCache = new FileCache(
+            Path.GetFullPath(options.Value.CacheRootPath),
             calculateCacheSize: false,
             cleanInterval: new TimeSpan(0, 0, options.Value.CacheLifeTime));
+        
     }
 
     public bool GetCachedImage(out string value, int id)

@@ -44,5 +44,13 @@ public class ApiController : ControllerBase
     [HttpPost]
     public async Task<bool> DeleteProduct(Product p)
         =>await _dbContextWrapper.DeleteProduct(p);
-    
+
+    public async Task<string> GetCategoryImage(int categoryId)
+    {
+        var category = await _dbContextWrapper.GetCategoryFromDb(categoryId);
+        return category.GetBase64Image();
+    }
+
+    public async Task<bool> UpdateCategoryImage(int categoryId,IFormFile file)
+        => await _dbContextWrapper.AddUpdateCategory(new Category(categoryId, file));
 }

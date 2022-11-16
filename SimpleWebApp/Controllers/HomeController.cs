@@ -15,14 +15,9 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-
+   
     public IActionResult Index()
         => View();
-
-    public IActionResult ShowMeException()
-    {
-        throw new Exception("This is test exception");
-    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

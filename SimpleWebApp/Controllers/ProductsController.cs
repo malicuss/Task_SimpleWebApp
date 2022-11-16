@@ -23,8 +23,6 @@ public class ProductsController : Controller
         _productsToShow = opt.Value.MaxProductsToShow;
     }
 
-    [Route("{controller}/{action}")]
-    [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
     {
@@ -33,7 +31,6 @@ public class ProductsController : Controller
         ViewData["Title"] = listPage.Title;
         return View(_dbContextWrapper.GetProductsFromDb(_productsToShow));
     }
-
     [HttpGet]
     public IActionResult AddUpdateProduct(int productId)
     {

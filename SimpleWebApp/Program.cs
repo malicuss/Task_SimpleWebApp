@@ -40,6 +40,9 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
     opt.LiClasses = "breadcrumb-item";
     opt.ActiveLiClasses = "breadcrumb-item active";
 });
+
+builder.Services.AddSwaggerDocument();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,6 +68,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.UseMiddleware<ImageCache>();
+
+app.UseOpenApi();
+app.UseSwaggerUi3();
+
 app.Run();
 
 public partial class Program { }

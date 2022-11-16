@@ -20,8 +20,6 @@ public class CategoriesController : Controller
         _logger = logger;
     }
 
-    [Route("{controller}/{action}")]
-    [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
     {
@@ -99,7 +97,7 @@ public class CategoriesController : Controller
         return RedirectToAction("ImageForm", "Categories", new { imageId });
     }
 
-    [Route("Image/{imageId}")]
+    [HttpGet("Image/{imageId}")]
     public IActionResult Image(int imageId)
     {
         Category tmp = null;

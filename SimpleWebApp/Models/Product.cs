@@ -51,6 +51,27 @@ namespace SimpleWebApp.Models
             SupplierId = newProd.SupplierId;
             CategoryId = newProd.CategoryId;
         }
+
+        public override string ToString()
+        {
+            var res = string.Empty;
+
+            res = $"{nameof(ProductId)} : {ProductId}\n" +
+                  $"{nameof(ProductName)} : {ProductName}\n" +
+                  $"{nameof(SupplierId)} : {SupplierId}\n" +
+                  $"{nameof(CategoryId)} : {CategoryId}\n" +
+                  $"{nameof(QuantityPerUnit)} : {QuantityPerUnit}\n" +
+                  $"{nameof(UnitPrice)} : {UnitPrice}\n" +
+                  $"{nameof(UnitsInStock)} : {UnitsInStock}\n" +
+                  $"{nameof(UnitsOnOrder)} : {UnitsOnOrder}\n" +
+                  $"{nameof(ReorderLevel)} : {ReorderLevel}\n" +
+                  $"{nameof(Discontinued)} : {Discontinued}\n" +
+                  $"{nameof(Category)} : {Category}\n" +
+                  $"{nameof(Supplier)} : {Supplier}\n" +
+                  $"{nameof(OrderDetails)} : {OrderDetails}\n";
+            return res;
+        }
+
         #endregion
     }
 }

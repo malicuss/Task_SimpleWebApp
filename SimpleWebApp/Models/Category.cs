@@ -14,9 +14,9 @@ namespace SimpleWebApp.Models
             CategoryId = categoryId;
             SavePicture(file).GetAwaiter().GetResult();
         }
-        [Required]
+        [Required] 
         public int CategoryId { get; set; }
-        [Required]
+        [Required] 
         public string CategoryName { get; set; } = null!;
         public string? Description { get; set; }
         public byte[]? Picture { get; set; }
@@ -25,9 +25,9 @@ namespace SimpleWebApp.Models
 
         public virtual void UpdateCategory(Category cat)
         {
-            CategoryName = cat.CategoryName??CategoryName;
-            Description = cat.Description??Description;
-            Picture = cat.Picture??Picture;
+            CategoryName = cat.CategoryName ?? CategoryName;
+            Description = cat.Description ?? Description;
+            Picture = cat.Picture ?? Picture;
         }
 
         public async Task SavePicture(IFormFile file)
@@ -40,6 +40,15 @@ namespace SimpleWebApp.Models
         public virtual string GetBase64Image()
         {
             return $"data:image/gif;base64,{Convert.ToBase64String(Picture.Skip(78).ToArray())}";
+        }
+
+        public override string ToString()
+        {
+            var res = $"{nameof(CategoryId)} : {CategoryId}" +
+                      $"{nameof(CategoryName)} : {CategoryName}" +
+                      $"{nameof(Description)} : {Description}" +
+                      $"{nameof(Picture)} : {Picture}";
+            return res;
         }
 
         private byte[] AddNoise(byte[] p)

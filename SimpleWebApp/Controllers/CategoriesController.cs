@@ -27,7 +27,7 @@ public class CategoriesController : Controller
         ViewData["BreadcrumbNode"] = listPage;
         ViewData["Title"] = listPage.Title;
         
-        foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
+        foreach (var cat in _dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult())
         {
             ViewData[cat.CategoryId.ToString()] =
                 _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
@@ -36,7 +36,7 @@ public class CategoriesController : Controller
                     .GetBase64Image();
         }
 
-        return View(_dbContextWrapper.GetCategoriesFromDb());
+        return View(_dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult());
     }
     
     [HttpGet]

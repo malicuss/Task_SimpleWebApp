@@ -17,8 +17,8 @@ public class DbContextWrapper : IDbContextWrapper
         _context = context;
     }
 
-   public List<Category> GetCategoriesFromDb()
-       => _context.Categories.ToList();
+   public Task<List<Category>> GetCategoriesFromDb()
+       => _context.Categories.ToListAsync();
    
    public async Task<Category> GetCategoryFromDb(int categoryId)
    {
@@ -43,6 +43,9 @@ public class DbContextWrapper : IDbContextWrapper
 
     public List<Product> GetProductsFromDb(int numberOfProducts = 0)
         => _context.Products.Take(numberOfProducts).ToList();
+
+    public Task<List<Product>> GetAllProductsFromDb()
+        =>_context.Products.ToListAsync();
 
     public async Task<Product> GetProductFromDb(int productId)
     {
@@ -137,7 +140,7 @@ public class DbContextWrapper : IDbContextWrapper
 
     private void UpdateDependantProperties(Product p)
     {
-        foreach (var cat in GetCategoriesFromDb())
+        foreach (var cat in GetCategoriesFromDb().GetAwaiter().GetResult())
             p.Categories.Add(new SelectListItem(cat.CategoryName,cat.CategoryId.ToString())); 
         foreach (var sup in GetSuppliersFromDb()) 
             p.Suppliers.Add(new SelectListItem(sup.CompanyName, sup.SupplierId.ToString()));

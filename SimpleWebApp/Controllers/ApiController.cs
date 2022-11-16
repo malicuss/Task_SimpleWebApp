@@ -32,6 +32,17 @@ public class ApiController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Product>>> GetProducts() 
         => await _dbContextWrapper.GetAllProductsFromDb();
+
+    [HttpPost]
+    public async Task<bool> CreateProduct(Product p) 
+        => await _dbContextWrapper.AddOrUpdateProduct(p);
     
+    [HttpPost]
+    public async Task<bool> UpdateProduct(Product p)
+        => await _dbContextWrapper.AddOrUpdateProduct(p);
+    
+    [HttpPost]
+    public async Task<bool> DeleteProduct(Product p)
+        =>await _dbContextWrapper.DeleteProduct(p);
     
 }

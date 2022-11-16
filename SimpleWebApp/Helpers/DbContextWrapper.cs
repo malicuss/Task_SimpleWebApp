@@ -79,7 +79,7 @@ public class DbContextWrapper : IDbContextWrapper
         {
             try
             {
-                AddProduct(_product);
+                await AddProduct(_product);
             }
             catch (Exception e)
             {
@@ -91,7 +91,7 @@ public class DbContextWrapper : IDbContextWrapper
         {
             try
             {
-                UpdateProduct(_product);
+                await UpdateProduct(_product);
             }
             catch (Exception e)
             {
@@ -101,7 +101,22 @@ public class DbContextWrapper : IDbContextWrapper
         }
 
         return true;
+    }
 
+    public async Task<bool> DeleteProduct(Product p)
+    {
+        try
+        {
+            _context.Products.Remove(p);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e,$"Unsuccessful deleting product with id:{p.ProductId.ToString()}");
+            return false;
+        }
+
+        return true;
     }
     
     public async Task<bool> AddUpdateCategory(Category cat)
@@ -124,18 +139,18 @@ public class DbContextWrapper : IDbContextWrapper
         return true;
     }
 
-    private void AddProduct(Product product)
+    private async Task AddProduct(Product product)
     { 
         _context.Products.Add(product);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    private void UpdateProduct(Product product)
+    private async Task UpdateProduct(Product product)
     {
         var productToUpdate =_context.Products.FirstOrDefaultAsync(x => x.ProductId == product.ProductId).GetAwaiter().GetResult();
         productToUpdate.UpdateProduct(product);
         _context.Products.Update(productToUpdate);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     private void UpdateDependantProperties(Product p)

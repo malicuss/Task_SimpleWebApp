@@ -13,5 +13,6 @@ public interface IDbContextWrapper
     Task<Product> GetProductFromDb(int productId);
     Task<Product> ProductToAddOrUpdate(int productId);
     Task<bool> AddOrUpdateProduct(Product p);
+    Task<bool> DeleteProduct(Product p);
     Task<bool> AddUpdateCategory(Category p);
 }

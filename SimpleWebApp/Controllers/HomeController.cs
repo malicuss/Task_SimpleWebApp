@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SimpleWebApp.Models;
 using SimpleWebApp.ViewModels;
+using SmartBreadcrumbs.Attributes;
 
 namespace SimpleWebApp.Controllers;
 
+[DefaultBreadcrumb]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

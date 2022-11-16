@@ -10,36 +10,47 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-xlg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button"
-                    style="background-color: #b5ffc9;
+    @if (IsSectionDefined("Header"))
+    {
+        RenderSection("Header", required: false);
+    }
+    else
+    {
+        <nav class="navbar navbar-expand-xlg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button"
+                        style="background-color: #b5ffc9;
                              color: #1d522b;
                              border-color: #1d522b;
                              border-radius: 5px;
                              border-width: medium;"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarToggleExternalContent"
-                    aria-controls="navbarToggleExternalContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>    
-    </nav>
-    <div class="collapse" id="navbarToggleExternalContent">
-        <ul class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="List">Products</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="List">Categories</a>
-            </li>
-        </ul>
-    </div>
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarToggleExternalContent"
+                        aria-controls="navbarToggleExternalContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>    
+        </nav>
+        <div class="collapse" id="navbarToggleExternalContent">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="List">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="List">Categories</a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            @* @Component.InvokeAsync("BreadCrumbs") *@
+            <vc:bread-crumbs></vc:bread-crumbs>
+        </div>
+    }
 </header>
 <div class="container">
     <main role="main" class="pb-3">
@@ -53,8 +64,15 @@
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 <footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2022 - SimpleWebApp
-    </div>
+    @if (IsSectionDefined("Footer"))
+    {
+        @RenderSection("Footer", required: false)
+    }
+    else
+    {
+        <div class="container">
+            &copy;2022 - SimpleWebApp
+        </div>
+    }
 </footer>
 </html>

@@ -1,4 +1,5 @@
 ﻿/SimpleWebApp/Logs/
+/SimpleWebApp/Cache/
 /SimpleWebApp/bin/
 /SimpleWebApp/obj/
 /SimpleWebApp/wwwroot/lib/

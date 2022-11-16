@@ -1,9 +1,11 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Middleware;
 using SimpleWebApp.Models;
 using SimpleWebApp.Services;
+using SmartBreadcrumbs.Extensions;
 
 //configuring Serilog
 Log.Logger = new LoggerConfiguration()
@@ -29,6 +31,14 @@ builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptio
 builder.Services.AddControllersWithViews(opt =>
 {
     opt.Filters.Add<ActionLoggingFilter>();
+});
+builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
+{
+    opt.TagName = "nav";
+    opt.TagClasses = "";
+    opt.OlClasses = "breadcrumb";
+    opt.LiClasses = "breadcrumb-item";
+    opt.ActiveLiClasses = "breadcrumb-item active";
 });
 var app = builder.Build();
 

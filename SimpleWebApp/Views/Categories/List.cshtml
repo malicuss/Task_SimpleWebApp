@@ -3,6 +3,7 @@
     ViewData["Title"] = "Categories";
     
 }
+@using SimpleWebApp.Helpers.HtmlHelpers
 @model IEnumerable<Category>
 <h3>@ViewData["Title"]</h3>
 <table class="custom">
@@ -16,10 +17,20 @@
                 @{
                     var k = ViewData[cat.CategoryId.ToString()];
                 }
-                <img height="100" width="100" src="@k" alt="">
+                @* <a northwind-id=@cat.CategoryId><img height="100" width="100" src="@k" alt=""></a> *@
+                @* @Html.NorthwindImageLink(cat.CategoryId, "some text") *@
+                @Html.NorthwindImage(cat)
             </td>
             <td class="custom">@Html.ActionLink(cat.CategoryName, "ImageForm", "Categories", new { imageId = cat.CategoryId })</td>
             <td class="custom">@cat.Description</td>
         </tr>
     }
 </table>
+@section Footer
+{
+    <div align="center">
+        <h1 class="text-danger">
+            You cannot edit Category list.
+        </h1>
+    </div>
+}

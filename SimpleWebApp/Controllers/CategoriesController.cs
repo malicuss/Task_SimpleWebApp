@@ -93,7 +93,7 @@ public class CategoriesController : Controller
             ViewData["imgString"] = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult()
                 .GetBase64Image();
-            //Response.ContentType = "Image/png";
+            Response.Headers.Add("ImageInData", imageId.ToString());
         }
         catch (CategoryNotFoundException e)
         {

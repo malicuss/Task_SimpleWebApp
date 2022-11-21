@@ -23,10 +23,13 @@ public class ImageCacher: ICacher
     public bool GetCachedImage(out string value, int id)
     {
         value = string.Empty;
-        var res = true;
-
-        value = _fileCache.GetCacheItem(id.ToString()).ToString();
-
+        var res = false;
+        var cv = _fileCache.GetCacheItem(id.ToString());
+        if (cv.Value != null)
+        {
+            value = cv.ToString();
+            res = true;
+        }
         return res;
     }
 

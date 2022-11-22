@@ -18,11 +18,11 @@ public class ApiController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Category>> GetCategory(int categoryId) 
+    public async Task<ActionResult<Category>> GetCategory([FromQuery]int categoryId) 
         => await _dbContextWrapper.GetCategoryFromDb(categoryId);
     
     [HttpGet]
-    public async Task<ActionResult<Product>> GetProduct(int productId) 
+    public async Task<ActionResult<Product>> GetProduct([FromQuery]int productId) 
         => await _dbContextWrapper.GetProductFromDb(productId);
     
     [HttpGet]
@@ -34,23 +34,25 @@ public class ApiController : ControllerBase
         => await _dbContextWrapper.GetAllProductsFromDb();
 
     [HttpPost]
-    public async Task<bool> CreateProduct(Product p) 
+    public async Task<bool> CreateProduct([FromForm]Product p) 
         => await _dbContextWrapper.AddOrUpdateProduct(p);
     
     [HttpPost]
-    public async Task<bool> UpdateProduct(Product p)
+    public async Task<bool> UpdateProduct([FromForm]Product p)
         => await _dbContextWrapper.AddOrUpdateProduct(p);
     
-    [HttpPost]
-    public async Task<bool> DeleteProduct(Product p)
+    [HttpDelete]
+    public async Task<bool> DeleteProduct([FromForm]Product p)
         =>await _dbContextWrapper.DeleteProduct(p);
 
-    public async Task<string> GetCategoryImage(int categoryId)
+    [HttpGet]
+    public async Task<string> GetCategoryImage([FromQuery]int categoryId)
     {
         var category = await _dbContextWrapper.GetCategoryFromDb(categoryId);
         return category.GetBase64Image();
     }
 
-    public async Task<bool> UpdateCategoryImage(int categoryId,IFormFile file)
+    [HttpPost]
+    public async Task<bool> UpdateCategoryImage([FromQuery]int categoryId,[FromForm] IFormFile file)
         => await _dbContextWrapper.AddUpdateCategory(new Category(categoryId, file));
 }

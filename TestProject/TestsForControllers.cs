@@ -4,8 +4,7 @@ using Xunit;
 
 namespace TestProject;
 
-public class BasicTests:
-   IClassFixture<WebApplicationFactory<Program>>
+public class BasicTests: IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
@@ -17,12 +16,10 @@ public class BasicTests:
     [Theory]
     [InlineData("/")]
     [InlineData("/Home")]
-    [InlineData("/Categories")]
     [InlineData("/Categories/List")]
     [InlineData("/Categories/ImageForm")]
     [InlineData("/Categories/ImageForm?ImageId=1")]
     [InlineData("/Image/1")]
-    [InlineData("/Products")]
     [InlineData("/Products/List")]
     [InlineData("/Products/AddUpdateProduct?ProductId=1")]
     public async Task Get_EndpointsReturn(string url)

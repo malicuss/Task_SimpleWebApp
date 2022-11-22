@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Middleware;
@@ -41,7 +42,12 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
     opt.ActiveLiClasses = "breadcrumb-item active";
 });
 
-builder.Services.AddSwaggerDocument();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.1"});
+});
+builder.Services.AddSwaggerGenNewtonsoftSupport();
+builder.Services.AddMvcCore().AddApiExplorer();
 
 var app = builder.Build();
 
@@ -69,8 +75,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.UseMiddleware<ImageCache>();
 
-app.UseOpenApi();
-app.UseSwaggerUi3();
+app.UseSwagger();
+app.UseSwaggerUI(x =>
+{
+    x.SwaggerEndpoint("v1/swagger.json", "Simple Api v1");
+});
 
 app.Run();
 

@@ -17,13 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
-// Add services to the container.
-
-builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Host.UseSerilog();  //inject Serilog
-builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
+builder.Host.UseSerilog();
+builder.Services.AddScoped<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
 builder.Services.AddControllersWithViews(opt =>

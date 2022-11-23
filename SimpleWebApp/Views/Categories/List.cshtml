@@ -14,7 +14,7 @@
         <tr>
             <td class="custom">
                 @{
-                    var k = ViewData[cat.CategoryId.ToString()];
+                    var k = Context.Items[$"imgString_{cat.CategoryId.ToString()}"];
                 }
                 <img height="100" width="100" src="@k" alt="">
             </td>

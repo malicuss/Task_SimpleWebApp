@@ -17,23 +17,30 @@ public class ImageCacher: ICacher
             Path.GetFullPath(options.Value.CacheRootPath),
             calculateCacheSize: false,
             cleanInterval: new TimeSpan(0, 0, options.Value.CacheLifeTime));
-        
     }
 
-    public bool GetCachedImage(out string value, int id)
+    public bool GetCachedObject(out object value, string id)
     {
-        value = string.Empty;
+        value = new object();
         var res = false;
-        var cv = _fileCache.GetCacheItem(id.ToString());
-        if (cv.Value != null)
+        try
         {
-            value = cv.ToString();
-            res = true;
+            var cv = _fileCache.GetCacheItem(id.ToString());
+            if (cv.Value != null)
+            {
+                value = cv.Value;
+                res = true;
+            }
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error occured during cache retrieving");
+        }
+
         return res;
     }
 
-    public bool SaveImageToCache(string value, int key)
+    public bool SaveObjectToCache(object value, string key)
     {
         bool result;
         if (_fileCache.GetCount() > _imageMaxCount)
@@ -43,7 +50,7 @@ public class ImageCacher: ICacher
         }
         try
         {
-            result = _fileCache.Add(key.ToString(), value, new CacheItemPolicy());
+            result = _fileCache.Add(key, value, new CacheItemPolicy());
         }
         catch (Exception e)
         {

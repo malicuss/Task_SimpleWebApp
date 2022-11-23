@@ -1,9 +1,12 @@
 ﻿/SimpleWebApp/Logs/
+/SimpleWebApp/Cache/
 /SimpleWebApp/bin/
 /SimpleWebApp/obj/
 /SimpleWebApp/wwwroot/lib/
 /TestProject/bin/
 /TestProject/obj/
+/Simple_restClient/bin/
+/Simple_restClient/obj/
 .idea
 .vs
 .user

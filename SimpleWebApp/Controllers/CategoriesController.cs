@@ -26,22 +26,22 @@ public class CategoriesController : Controller
     {
         foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
         {
-            ViewData[cat.CategoryId.ToString()] =
+            HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
                 _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
                     .GetAwaiter()
                     .GetResult()
                     .GetBase64Image();
         }
-
         return View(_dbContextWrapper.GetCategoriesFromDb());
     }
     
-    [HttpGet]
+    [HttpGet("{controller}/{action}/{imageId}")]
     public IActionResult ImageForm(int imageId)
     {
         try
         {
-            ViewData["imgString"] = _dbContextWrapper.GetCategoryFromDb(imageId)
+            HttpContext.Items["imgString"] = imageId;
+            HttpContext.Items[$"imgString_{imageId}"] = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult()
                 .GetBase64Image();
         }
@@ -54,7 +54,6 @@ public class CategoriesController : Controller
         {
             _logger.LogError(e,"Some Error during retrieving image from db");
         }
-
         
         return View(imageId);
     }
@@ -85,15 +84,15 @@ public class CategoriesController : Controller
         return RedirectToAction("ImageForm", "Categories", new { imageId });
     }
 
-    [Route("Image/{imageId}")]
+    [HttpGet("Image/{imageId}")]
     public IActionResult Image(int imageId)
     {
         try
         {
-            ViewData["imgString"] = _dbContextWrapper.GetCategoryFromDb(imageId)
+            HttpContext.Items["imgString"] = imageId;
+            HttpContext.Items[$"imgString_{imageId}"] = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult()
                 .GetBase64Image();
-            Response.Headers.Add("ImageInData", imageId.ToString());
         }
         catch (CategoryNotFoundException e)
         {

@@ -58,7 +58,7 @@ public class CategoriesController : Controller
         return View(imageId);
     }
 
-    [HttpPost]
+    [HttpPost("{controller}/{action}/{imageId}")]
     public async Task<IActionResult> ImageForm(int imageId, IFormFile file)
     {
         if (file == null)

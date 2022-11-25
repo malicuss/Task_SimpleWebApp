@@ -51,25 +51,6 @@ namespace SimpleWebApp.Models
             SupplierId = newProd.SupplierId;
             CategoryId = newProd.CategoryId;
         }
-
-        public void UpdateDependantProperties(NorthwindContext context)
-        {
-            SetUpCategories(context.Categories);
-            SetUpSuppliers(context.Suppliers);
-        }
-        
-        private void SetUpCategories(IEnumerable<Category> categories)
-        {
-            foreach (var cat in categories)
-                Categories.Add(new SelectListItem(cat.CategoryName,cat.CategoryId.ToString()));
-        }
-    
-        private void SetUpSuppliers(IEnumerable<Supplier> suppliers)
-        {
-            foreach (var sup in suppliers)
-                Suppliers.Add(new SelectListItem(sup.CompanyName, sup.SupplierId.ToString()));
-        }
-        
         #endregion
     }
 }

@@ -31,7 +31,7 @@ public class CategoriesController : Controller
         
         foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
         {
-            ViewData[cat.CategoryId.ToString()] =
+            HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
                 _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
                     .GetAwaiter()
                     .GetResult()
@@ -41,7 +41,7 @@ public class CategoriesController : Controller
         return View(_dbContextWrapper.GetCategoriesFromDb());
     }
     
-    [HttpGet]
+    [HttpGet("{controller}/{action}/{imageId}")]
     public IActionResult ImageForm(int imageId)
     {
         Category tmp = null;
@@ -49,7 +49,8 @@ public class CategoriesController : Controller
         {
             tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult();
-            ViewData["imgString"] = tmp.GetBase64Image();
+            HttpContext.Items["imgString"] = imageId;
+            HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
         }
         catch (CategoryNotFoundException e)
         {
@@ -73,7 +74,7 @@ public class CategoriesController : Controller
         return View(imageId);
     }
 
-    [HttpPost]
+    [HttpPost("{controller}/{action}/{imageId}")]
     public async Task<IActionResult> ImageForm(int imageId, IFormFile file)
     {
         if (file == null)
@@ -99,7 +100,7 @@ public class CategoriesController : Controller
         return RedirectToAction("ImageForm", "Categories", new { imageId });
     }
 
-    [Route("Image/{imageId}")]
+    [HttpGet("Image/{imageId}")]
     public IActionResult Image(int imageId)
     {
         Category tmp = null;
@@ -107,7 +108,8 @@ public class CategoriesController : Controller
         {
             tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
                 .GetAwaiter().GetResult();
-            ViewData["imgString"] = tmp.GetBase64Image();
+            HttpContext.Items["imgString"] = imageId;
+            HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
         }
         catch (CategoryNotFoundException e)
         {

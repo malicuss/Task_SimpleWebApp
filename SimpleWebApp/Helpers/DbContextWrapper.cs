@@ -63,8 +63,8 @@ public class DbContextWrapper : IDbContextWrapper
         catch (ProductNotFoundException e)
         {
             res = new Product { ProductId = 0 };
-            UpdateDependantProperties(res);
         }
+        UpdateDependantProperties(res);
 
         return res;
     }

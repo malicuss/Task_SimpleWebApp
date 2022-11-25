@@ -36,44 +36,42 @@ public class ImageCache
 
     private async Task<bool> CheckRequest(HttpContext context)
     {
-        if (context.Request.Method.Equals("POST")) return true;
-            
-        if (EvaluateViewPath(context, out var path) &&
-            EvaluateCache(context))
-        {
-            await RunView(context, path);
-            return false; // we are good no need to proceed with next()
-        }
-        return true;
-    }
-    
-    private bool EvaluateViewPath(HttpContext context,out string path)
-    {
-        path = String.Empty;
-        if (!context.Request.RouteValues["controller"].Equals("Categories")) return false;
-        path = $"~/Views/{context.Request.RouteValues["controller"]}/{context.Request.RouteValues["action"]}.cshtml";
+        if (context.Request.RouteValues["controller"].Equals("Categories"))
+            ApplyCache(context);
         return true;
     }
 
-    private bool EvaluateCache(HttpContext context)
+    private void ApplyCache(HttpContext context)
     {
-        var res = true;
-        if (context.Request.RouteValues.Contains(new KeyValuePair<string, object?>("action", "Image")))
+        if (context.Request.RouteValues.Contains(new KeyValuePair<string, object?>("action", "Image"))||
+           context.Request.RouteValues.Contains(new KeyValuePair<string, object?>("action", "ImageForm")))
         {
-            res =_cacher.GetCachedObject(out var obj,context.Request.RouteValues["imageId"].ToString());
+            string id = string.Empty;
+            if (context.Request.RouteValues.ContainsKey("imageId"))
+                id = context.Request.RouteValues["imageId"].ToString();
+            else
+            {
+                id = context.Request.Query["imageId"].ToString();
+            }
+            var res =_cacher.GetCachedObject(out var obj,id);
+            if (res)
+            {
+                context.Items["imgString"]=id;
+                context.Items[$"imgString_{id}"]=obj;
+            }
         }
         else
         {
             foreach (var cat in GetCategories())
             {
-                if (!_cacher.GetCachedObject(out var obj, cat.CategoryId.ToString()))
+                if (_cacher.GetCachedObject(out var obj, cat.CategoryId.ToString()) &&
+                    context.Request.RouteValues.Contains(new KeyValuePair<string, object?>("action", "List")))
                 {
-                    res = false;
-                    break;
+                    var id = cat.CategoryId.ToString();
+                    context.Items[$"imgString_{id}"]=obj;
                 }
             }
         }
-        return res;
     }
 
     private void EvaluateResponse(HttpContext context)
@@ -84,47 +82,6 @@ public class ImageCache
             if (item.Key.ToString().Contains("imgString_"))
             {
                 _cacher.SaveObjectToCache(item.Value, item.Key.ToString().Trim("imgString_".ToCharArray()));
-            }
-        }
-    }
-    
-    private async Task RunView(HttpContext context, string viewToRun)
-    {
-        var viewDataDictionary = new ViewDataDictionary(
-            new EmptyModelMetadataProvider(),
-            new ModelStateDictionary());
-        var executor = context.RequestServices
-            .GetRequiredService<IActionResultExecutor<ViewResult>>();
-        var routeData = context.GetRouteData() ?? new RouteData();
-        var actionContext = new ActionContext(context, routeData,
-            new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
-
-        var viewResult = new ViewResult { ViewName = viewToRun };
-        if (context.Request.RouteValues["action"].Equals("List"))
-        {
-            viewDataDictionary.Model = GetCategories();
-            FillFromCache(GetCategories().ConvertAll(x=>x.CategoryId.ToString()), 
-                ref actionContext);
-        }
-        else
-        {
-            viewDataDictionary.Model = context.Request.RouteValues["imageId"];
-            FillFromCache(new List<string>(){context.Request.RouteValues["imageId"].ToString()},
-                ref actionContext);
-        }
-
-        viewResult.ViewData = viewDataDictionary;
-        await executor.ExecuteAsync(actionContext, viewResult);   
-    }
-
-    private void FillFromCache(List<string> ids,ref ActionContext context)
-    {
-        foreach (var id in ids)
-        {
-            if (_cacher.GetCachedObject(out var value, id))
-            {
-                context.HttpContext.Items.Add($"imgString_{id}", value);
-                if (ids.Count<=1)context.HttpContext.Items.Add($"imgString", id);
             }
         }
     }

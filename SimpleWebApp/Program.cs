@@ -39,12 +39,10 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
 });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment() ||
     !app.Configuration.GetValue<bool>("ExceptionHandlingDev"))
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseStatusCodePages();
 }

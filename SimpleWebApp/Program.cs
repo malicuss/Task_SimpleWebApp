@@ -7,6 +7,8 @@ using SimpleWebApp.Middleware;
 using SimpleWebApp.Models;
 using SimpleWebApp.Services;
 using SmartBreadcrumbs.Extensions;
+using Microsoft.AspNetCore.Identity;
+using SimpleWebApp;
 
 //configuring Serilog
 Log.Logger = new LoggerConfiguration()
@@ -25,7 +27,11 @@ Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Host.UseSerilog();  //inject Serilog
+builder.Services.AddDbContext<SecurityContext>(opt=>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<SecurityContext>().AddDefaultUI().AddDefaultTokenProviders();
+builder.Host.UseSerilog();
 builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
@@ -42,12 +48,41 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
     opt.ActiveLiClasses = "breadcrumb-item active";
 });
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
 builder.Services.AddSwaggerGen(x =>
 {
     x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.1"});
 });
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();
+// builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -68,11 +103,13 @@ app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 
 app.UseRouting();
+app.UseAuthentication();;
 
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 app.UseMiddleware<ImageCache>();
 
 app.UseSwagger();

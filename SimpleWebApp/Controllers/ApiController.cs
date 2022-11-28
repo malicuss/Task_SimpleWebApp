@@ -35,11 +35,11 @@ public class ApiController : ControllerBase
 
     [HttpPost]
     public async Task<bool> CreateProduct([FromForm]Product p) 
-        => await _dbContextWrapper.AddOrUpdateProduct(p);
+        => await _dbContextWrapper.CreateProduct(p);
     
     [HttpPost]
     public async Task<bool> UpdateProduct([FromForm]Product p)
-        => await _dbContextWrapper.AddOrUpdateProduct(p);
+        => await _dbContextWrapper.UpdateProduct(p);
     
     [HttpDelete]
     public async Task<bool> DeleteProduct([FromForm]Product p)
@@ -54,5 +54,5 @@ public class ApiController : ControllerBase
 
     [HttpPost]
     public async Task<bool> UpdateCategoryImage([FromQuery]int categoryId,[FromForm] IFormFile file)
-        => await _dbContextWrapper.AddUpdateCategory(new Category(categoryId, file));
+        => await _dbContextWrapper.UpdateCategory(new Category(categoryId, file));
 }

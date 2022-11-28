@@ -90,7 +90,7 @@ public class CategoriesController : Controller
             return View(imageId);
         }
 
-        if (!_dbContextWrapper.AddUpdateCategory(new Category(imageId, file)).GetAwaiter().GetResult())
+        if (!_dbContextWrapper.UpdateCategory(new Category(imageId, file)).GetAwaiter().GetResult())
             ModelState.AddModelError("File", "Unsuccessful updating of picture");
         ;
 

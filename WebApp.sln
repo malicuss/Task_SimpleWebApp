@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple_restClient", "Simple_restClient\Simple_restClient.csproj", "{75951F7E-DAB0-47E3-8675-19C0E71FA787}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IO.Swagger", "TestProjects\IO.Swagger\IO.Swagger.csproj", "{D123D30A-748D-46DF-8678-BABEB7DC8279}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{75951F7E-DAB0-47E3-8675-19C0E71FA787}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75951F7E-DAB0-47E3-8675-19C0E71FA787}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75951F7E-DAB0-47E3-8675-19C0E71FA787}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D123D30A-748D-46DF-8678-BABEB7DC8279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D123D30A-748D-46DF-8678-BABEB7DC8279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D123D30A-748D-46DF-8678-BABEB7DC8279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D123D30A-748D-46DF-8678-BABEB7DC8279}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

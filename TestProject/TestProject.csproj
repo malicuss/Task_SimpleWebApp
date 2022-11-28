@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SimpleWebApp\SimpleWebApp.csproj" />
+      <ProjectReference Include="..\TestProjects\IO.Swagger\IO.Swagger.csproj" />
     </ItemGroup>
 
 </Project>

@@ -5,6 +5,9 @@
 /SimpleWebApp/wwwroot/lib/
 /TestProject/bin/
 /TestProject/obj/
+/packages
+/TestProjects/IO.Swagger/bin
+/TestProjects/IO.Swagger/obj
 /Simple_restClient/bin/
 /Simple_restClient/obj/
 .idea

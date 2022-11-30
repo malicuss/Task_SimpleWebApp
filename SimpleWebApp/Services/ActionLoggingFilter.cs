@@ -18,7 +18,7 @@ public class ActionLoggingFilter : IActionFilter
     }
     public void OnActionExecuting(ActionExecutingContext context)
     { 
-        _logger.LogCritical(String.Format("{0} - invoked", context.ActionDescriptor.DisplayName));
+        _logger.LogTrace(String.Format("{0} - invoked", context.ActionDescriptor.DisplayName));
         if (_logParameters) 
             _logger.LogCritical(Strings.Format($"{LogParameters(context.ActionArguments)}"));
     }

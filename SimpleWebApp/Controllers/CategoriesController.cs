@@ -1,8 +1,6 @@
-﻿using System.Buffers.Text;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
-using SimpleWebApp.ViewModels;
 using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;
@@ -20,20 +18,25 @@ public class CategoriesController : Controller
         _logger = logger;
     }
 
+    [Route("{controller}/{action}")]
+    [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
     {
         var listPage = new MvcBreadcrumbNode("List", "Categories", "Categories") ;
         ViewData["BreadcrumbNode"] = listPage;
         ViewData["Title"] = listPage.Title;
-        
-        foreach (var cat in _dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult())
+
+        if (!HttpContext.Items.ContainsKey("imgString"))
         {
-            ViewData[cat.CategoryId.ToString()] =
-                _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
-                    .GetAwaiter()
-                    .GetResult()
-                    .GetBase64Image();
+            foreach (var cat in _dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult())
+            {
+                HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
+                    _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
+                        .GetAwaiter()
+                        .GetResult()
+                        .GetBase64Image();
+            }
         }
 
         return View(_dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult());
@@ -45,9 +48,13 @@ public class CategoriesController : Controller
         Category tmp = null;
         try
         {
-            tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
-                .GetAwaiter().GetResult();
-            ViewData["imgString"] = tmp.GetBase64Image();
+            if (!HttpContext.Items.ContainsKey("imgString"))
+            {
+                tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
+                    .GetAwaiter().GetResult();
+                HttpContext.Items["imgString"] = imageId;
+                HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
+            }
         }
         catch (CategoryNotFoundException e)
         {
@@ -103,9 +110,13 @@ public class CategoriesController : Controller
         Category tmp = null;
         try
         {
-            tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
-                .GetAwaiter().GetResult();
-            ViewData["imgString"] = tmp.GetBase64Image();
+            if (!HttpContext.Items.ContainsKey("imgString"))
+            {
+                tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
+                    .GetAwaiter().GetResult();
+                HttpContext.Items["imgString"] = imageId;
+                HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
+            }
         }
         catch (CategoryNotFoundException e)
         {

@@ -2,6 +2,8 @@
 using SimpleWebApp.Helpers;
 using Microsoft.Extensions.Options;
 using SimpleWebApp.Models;
+using SmartBreadcrumbs.Attributes;
+using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;
 
@@ -25,12 +27,28 @@ public class ProductsController : Controller
     [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
-        =>View(_dbContextWrapper.GetProductsFromDb(_productsToShow));
-    
+    {
+        var listPage = new MvcBreadcrumbNode("List", "Products", "Products") ;
+        ViewData["BreadcrumbNode"] = listPage;
+        ViewData["Title"] = listPage.Title;
+        return View(_dbContextWrapper.GetProductsFromDb(_productsToShow));
+    }
+
     [HttpGet]
     public IActionResult AddUpdateProduct(int productId)
     {
         var product = _dbContextWrapper.ProductToAddOrUpdate(productId).GetAwaiter().GetResult();
+        
+        var breadCrumbsTitle = "UpdateProduct";
+        if (product.ProductId == 0)
+            breadCrumbsTitle = "Creat Product";
+        var listPage = new MvcBreadcrumbNode("AddUpdateProduct", "Products", breadCrumbsTitle)
+        {
+            Parent = new MvcBreadcrumbNode("List", "Products", "Products") 
+        };
+        ViewData["BreadcrumbNode"] = listPage;
+        ViewData["Title"] = listPage.Title;
+        
         return View(product);
     }
 

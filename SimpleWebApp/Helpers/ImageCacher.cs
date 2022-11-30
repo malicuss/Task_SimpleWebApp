@@ -29,20 +29,13 @@ public class ImageCacher: ICacher
     private void CleanCache(Object source, ElapsedEventArgs e)
     {
         _fileCache.Flush();
-        _logger.LogTrace("Cache cleaned");
+        _logger.LogInformation("Cache cleaned");
         _alarmState = false;
-    }
-
-    private void StartAlarm()
-    {
-        _alarm.Start();
-        _alarmState = true;
-        _logger.LogTrace("Cache countdown started.");
     }
     
     private void RestartAlarm()
     {
-        if (_alarmState != false)
+        if (_alarmState)
             _alarm.Stop();
         _alarm.Start();
         _alarmState = true;
@@ -68,7 +61,7 @@ public class ImageCacher: ICacher
             _logger.LogError(e, "Error occured during cache retrieving");
         }
 
-        _logger.LogTrace($"returning {id} from cache");
+        _logger.LogInformation($"returning {id} from cache");
         return res;
     }
 
@@ -87,7 +80,7 @@ public class ImageCacher: ICacher
         try
         {
             result = _fileCache.Add(key, value, new CacheItemPolicy());
-            _logger.LogTrace($"saved {key} to cache");
+            _logger.LogInformation($"saved {key} to cache");
         }
         catch (Exception e)
         {

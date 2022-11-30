@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleWebApp.Helpers;
 using SimpleWebApp.Models;
 using SimpleWebApp.ViewModels;
+using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;
 
@@ -24,26 +25,38 @@ public class CategoriesController : Controller
     [HttpGet]
     public IActionResult List()
     {
-        foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
+        var listPage = new MvcBreadcrumbNode("List", "Categories", "Categories") ;
+        ViewData["BreadcrumbNode"] = listPage;
+        ViewData["Title"] = listPage.Title;
+
+        if (!HttpContext.Items.ContainsKey("imgString"))
         {
-            HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
-                _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
-                    .GetAwaiter()
-                    .GetResult()
-                    .GetBase64Image();
+            foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
+            {
+                HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
+                    _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
+                        .GetAwaiter()
+                        .GetResult()
+                        .GetBase64Image();
+            }
         }
+
         return View(_dbContextWrapper.GetCategoriesFromDb());
     }
     
-    [HttpGet("{controller}/{action}/{imageId}")]
+    [HttpGet]
     public IActionResult ImageForm(int imageId)
     {
+        Category tmp = null;
         try
         {
-            HttpContext.Items["imgString"] = imageId;
-            HttpContext.Items[$"imgString_{imageId}"] = _dbContextWrapper.GetCategoryFromDb(imageId)
-                .GetAwaiter().GetResult()
-                .GetBase64Image();
+            if (!HttpContext.Items.ContainsKey("imgString"))
+            {
+                tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
+                    .GetAwaiter().GetResult();
+                HttpContext.Items["imgString"] = imageId;
+                HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
+            }
         }
         catch (CategoryNotFoundException e)
         {
@@ -54,11 +67,20 @@ public class CategoriesController : Controller
         {
             _logger.LogError(e,"Some Error during retrieving image from db");
         }
+
+        var listPage = new MvcBreadcrumbNode("ImageForm",
+            "Categories",
+            $"Update image for {tmp?.CategoryName}")
+        {
+            Parent = new MvcBreadcrumbNode("List", "Categories", "Categories")
+        } ;
+        ViewData["BreadcrumbNode"] = listPage;
+        ViewData["Title"] = listPage.Title;
         
         return View(imageId);
     }
 
-    [HttpPost("{controller}/{action}/{imageId}")]
+    [HttpPost]
     public async Task<IActionResult> ImageForm(int imageId, IFormFile file)
     {
         if (file == null)
@@ -87,12 +109,16 @@ public class CategoriesController : Controller
     [HttpGet("Image/{imageId}")]
     public IActionResult Image(int imageId)
     {
+        Category tmp = null;
         try
         {
-            HttpContext.Items["imgString"] = imageId;
-            HttpContext.Items[$"imgString_{imageId}"] = _dbContextWrapper.GetCategoryFromDb(imageId)
-                .GetAwaiter().GetResult()
-                .GetBase64Image();
+            if (!HttpContext.Items.ContainsKey("imgString"))
+            {
+                tmp = _dbContextWrapper.GetCategoryFromDb(imageId)
+                    .GetAwaiter().GetResult();
+                HttpContext.Items["imgString"] = imageId;
+                HttpContext.Items[$"imgString_{imageId}"] = tmp.GetBase64Image();
+            }
         }
         catch (CategoryNotFoundException e)
         {
@@ -102,6 +128,12 @@ public class CategoriesController : Controller
         {
             _logger.LogError(e,"Some Error during retrieving image from db");
         }
+        
+        var listPage = new MvcBreadcrumbNode("Image",
+            "Categories",
+            $"Image for {tmp?.CategoryName} category") ;
+        ViewData["BreadcrumbNode"] = listPage;
+        ViewData["Title"] = listPage.Title;
         
         return View(imageId);
     }

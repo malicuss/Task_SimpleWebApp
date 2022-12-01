@@ -76,6 +76,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdministratorRole",
+        policy => policy.RequireRole("Administrator"));
+});
+
 builder.Services.AddSwaggerGen(x =>
 {
     x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.1"});
@@ -85,6 +91,25 @@ builder.Services.AddMvcCore().AddApiExplorer();
 // builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+using (var scoped = app.Services.CreateScope())
+{
+    var serviceProvider = scoped.ServiceProvider;
+    var context = serviceProvider.GetRequiredService<SecurityContext>();
+    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var adminRole = new IdentityRole { Name = "Administrator", NormalizedName = "ADMINISTRATOR" };
+
+    if (!await roleManager.RoleExistsAsync(adminRole.Name))
+    {
+        await context.Roles.AddAsync(adminRole);
+        await roleManager.CreateAsync(adminRole);
+        // creating default admin user;
+        var adminUser = new IdentityUser { UserName = "sa@domain.com", Email = "sa@domain.com", NormalizedUserName = "sa@domain.com".ToUpper(),EmailConfirmed = true};
+        await userManager.CreateAsync(adminUser, "123Qwert!");
+        await userManager.AddToRoleAsync(adminUser, adminRole.Name);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment() ||

@@ -1,9 +1,10 @@
 ﻿@{
     Layout = "_Layout";
-    var k = ViewData["imgString"];
+    
+    var img = Context.Items[$"imgString_{Context.Items["imgString"]}"];
 }
 <p>
-    <img height="100" width="100" src="@k" alt="">
+    <img height="100" width="100" src="@img" alt="">
 </p>
 <form method="post" enctype="multipart/form-data">
     @Html.ValidationSummary()

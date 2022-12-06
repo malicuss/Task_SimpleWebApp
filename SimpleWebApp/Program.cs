@@ -2,10 +2,10 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using SimpleWebApp.Helpers;
-using SimpleWebApp.Middleware;
-using SimpleWebApp.Models;
-using SimpleWebApp.Services;
+using SimpleWebApp.Core.Helpers;
+using SimpleWebApp.Core.Middleware;
+using SimpleWebApp.Core.Models;
+using SimpleWebApp.Core.Services;
 using SmartBreadcrumbs.Extensions;
 using Microsoft.AspNetCore.Identity;
 using SimpleWebApp;
@@ -22,9 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
-// Add services to the container.
-
-builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
+builder.Host.UseSerilog();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<SecurityContext>(opt=>
@@ -32,7 +30,7 @@ builder.Services.AddDbContext<SecurityContext>(opt=>
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SecurityContext>().AddDefaultUI().AddDefaultTokenProviders();
 builder.Host.UseSerilog();
-builder.Services.AddTransient<IDbContextWrapper, DbContextWrapper>();
+builder.Services.AddScoped<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
 builder.Services.AddControllersWithViews(opt =>
@@ -84,11 +82,10 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(x =>
 {
-    x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.1"});
+    x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.2"});
 });
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();
-// builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -116,7 +113,6 @@ if (!app.Environment.IsDevelopment() ||
     !app.Configuration.GetValue<bool>("ExceptionHandlingDev"))
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
     app.UseStatusCodePages();
 }
@@ -129,12 +125,13 @@ app.UseSerilogRequestLogging();
 
 app.UseRouting();
 app.UseAuthentication();;
-
 app.UseAuthorization();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
 app.UseMiddleware<ImageCache>();
 
 app.UseSwagger();

@@ -3,8 +3,8 @@
     ViewData["Title"] = "Categories";
     
 }
-@using SimpleWebApp.Helpers.HtmlHelpers
-@model IEnumerable<Category>
+@using SimpleWebApp.Core.Helpers.HtmlHelpers
+@model IEnumerable<SimpleWebApp.Core.Models.Category>
 <h3>@ViewData["Title"]</h3>
 <table class="custom">
     <th class="custom"> </th>
@@ -15,7 +15,7 @@
         <tr>
             <td class="custom">
                 @{
-                    var k = ViewData[cat.CategoryId.ToString()];
+                    var k = Context.Items[$"imgString_{cat.CategoryId.ToString()}"];
                 }
                 @* <a northwind-id=@cat.CategoryId><img height="100" width="100" src="@k" alt=""></a> *@
                 @* @Html.NorthwindImageLink(cat.CategoryId, "some text") *@

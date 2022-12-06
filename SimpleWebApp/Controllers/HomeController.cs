@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SimpleWebApp.ViewModels;
+using SimpleWebApp.Core.ViewModels;
 using SmartBreadcrumbs.Attributes;
 
 namespace SimpleWebApp.Controllers;
@@ -17,9 +17,6 @@ public class HomeController : Controller
     }
    
     public IActionResult Index()
-        => View();
-
-    public IActionResult RestClient()
         => View();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

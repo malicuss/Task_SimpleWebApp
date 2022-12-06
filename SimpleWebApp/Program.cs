@@ -2,10 +2,10 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using SimpleWebApp.Helpers;
-using SimpleWebApp.Middleware;
-using SimpleWebApp.Models;
-using SimpleWebApp.Services;
+using SimpleWebApp.Core.Helpers;
+using SimpleWebApp.Core.Middleware;
+using SimpleWebApp.Core.Models;
+using SimpleWebApp.Core.Services;
 using SmartBreadcrumbs.Extensions;
 
 //configuring Serilog
@@ -20,9 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
+builder.Host.UseSerilog();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Host.UseSerilog();
 builder.Services.AddScoped<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
@@ -41,7 +41,7 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
 
 builder.Services.AddSwaggerGen(x =>
 {
-    x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.1"});
+    x.SwaggerDoc("v1",new OpenApiInfo{ Title = "Simple Api", Version = "v1.2"});
 });
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();

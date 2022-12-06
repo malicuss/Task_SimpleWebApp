@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleWebApp.Helpers;
-using SimpleWebApp.Models;
+using SimpleWebApp.Core.Helpers;
+using SimpleWebApp.Core.Models;
 using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;

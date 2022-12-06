@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Product App</title>
+</head>
+<body>
+
+  <div>
+    <h2>All Products</h2>
+    <ul id="products"></ul>
+  </div>
+
+  <div>
+    <h2>All Categories</h2>
+    <ul id="categories"></ul>
+  </div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+  <script>
+    let products = 'https://localhost:5002/api/products';
+    let categories = 'https://localhost:5002/api/categories';
+    
+    
+    $(document).ready(function () {
+      $.getJSON(products)
+        .done(function (data) {
+          $.each(data, function (key, item) {
+            $('<li>', { text: formatProduct(item) }).appendTo($('#products'));
+        });
+      });
+    });
+    
+    $(document).ready(function () {
+      $.getJSON(categories)
+        .done(function (data) {
+          $.each(data, function (key, item) {
+           $('<li>', { text: formatCategory(item) }).appendTo($('#categories'));
+        });
+      });
+    });
+
+    function formatProduct(item) {
+      return  item.productName + ': '+
+      item.quantityPerUnit + ': '+
+      item.unitPrice + ': '+
+      item.unitsInStock + ': '+
+      item.unitsOnOrder + ': '+
+      item.reorderLevel + ': '+
+      item.discontinued
+    }
+    
+    function formatCategory(item) {
+      return  item.categoryId + ': '+
+      item.categoryName+ ': ' +
+      item.description
+    }
+  </script>
+</body>
+</html>

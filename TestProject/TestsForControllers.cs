@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IO.Swagger.Api;
-using IO.Swagger.Client;
 using Microsoft.AspNetCore.Mvc.Testing;
-using SimpleWebApp.Models;
+using SimpleWebApp.Core.Models;
 using Xunit;
 
 namespace TestProject;
@@ -61,7 +60,7 @@ public class BasicTests: IClassFixture<WebApplicationFactory<Program>>
     {
         _factory = factory;
         _testStubs = new ApiTestStubs();
-        _apiApi = new ApiApi("https://localhost:7263");
+        _apiApi = new ApiApi("https://localhost:5001");
     }
 
     [Theory]
@@ -86,14 +85,14 @@ public class BasicTests: IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task API_GetProducts()
     {
-        var prods = _apiApi.ApiGetProductsGet();
+        var prods = _apiApi.ApiProductsGet();
         Assert.True(prods.Count>0);
     }
 
     [Fact]
     public async Task API_CreateProduct()
     {
-        var res = await _apiApi.ApiCreateProductPostAsync(
+        var res = await _apiApi.ApiPostProductProductPostAsync(
             _testStubs.ProductA.ProductId,
             _testStubs.ProductA.ProductName,
             _testStubs.ProductA.SupplierId,
@@ -110,7 +109,7 @@ public class BasicTests: IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task API_UpdateProduct()
     {
-        var tmp = await _apiApi.ApiCreateProductPostAsync(
+        var tmp = await _apiApi.ApiPutProductProductPutAsync(
             _testStubs.ProductA.ProductId,
             _testStubs.ProductA.ProductName,
             _testStubs.ProductA.SupplierId,
@@ -122,9 +121,9 @@ public class BasicTests: IClassFixture<WebApplicationFactory<Program>>
             _testStubs.ProductA.ReorderLevel,
             _testStubs.ProductA.Discontinued);
         
-        var id = _apiApi.ApiGetProductsGet().Last().ProductId;
+        var id = _apiApi.ApiProductsGet().Last().ProductId;
         
-        var res = _apiApi.ApiUpdateProductPost(
+        var res = await _apiApi.ApiPutProductProductPutAsync(
             id,
             _testStubs.ProductB.ProductName,
             _testStubs.ProductB.SupplierId,

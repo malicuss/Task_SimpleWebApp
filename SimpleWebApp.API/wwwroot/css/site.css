@@ -1,0 +1,61 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+table{
+  border-radius: 15px;
+}
+
+li{
+  margin-left: 25px;
+}
+
+button{
+  margin: 15px 15px 15px 0;
+  background-color: #b5ffc9;
+  color: #1d522b;
+  border-color: #1d522b;
+  border-radius: 5px;
+  border-width: medium;
+}
+table, th, td{
+  border-spacing: 5px;
+  border: transparent;
+  padding: 4px;
+  text-align: center;
+  color: darkblue;
+}
+th{
+  padding: 5px;
+}
+tbody tr.custom:nth-child(even){
+  background-color: #b5ffc9;
+  color: transparent;
+}
+
+table.custom, th.custom, td.custom{
+  border: transparent;
+  padding: 5px 10px 7px 0;
+  color: darkblue;
+  text-align: left;
+}
+
+input.class-chb{
+  width: 25px;
+  height: 25px;
+}

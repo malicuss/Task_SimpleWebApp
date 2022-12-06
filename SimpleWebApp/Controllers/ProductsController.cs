@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleWebApp.Helpers;
 using Microsoft.Extensions.Options;
-using SimpleWebApp.Models;
-using SmartBreadcrumbs.Attributes;
+using SimpleWebApp.Core.Helpers;
+using SimpleWebApp.Core.Models;
 using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;
@@ -23,17 +22,14 @@ public class ProductsController : Controller
         _productsToShow = opt.Value.MaxProductsToShow;
     }
 
-    [Route("{controller}/{action}")]
-    [Route("{controller}")]
     [HttpGet]
     public IActionResult List()
     {
         var listPage = new MvcBreadcrumbNode("List", "Products", "Products") ;
         ViewData["BreadcrumbNode"] = listPage;
         ViewData["Title"] = listPage.Title;
-        return View(_dbContextWrapper.GetProductsFromDb(_productsToShow));
+        return View(_dbContextWrapper.GetProductsFromDb(_productsToShow).GetAwaiter().GetResult());
     }
-
     [HttpGet]
     public IActionResult AddUpdateProduct(int productId)
     {
@@ -55,8 +51,12 @@ public class ProductsController : Controller
     [HttpPost]
     public IActionResult AddUpdateProduct(Product p)
     {
-        if(_dbContextWrapper.AddOrUpdateProduct(p).GetAwaiter().GetResult())
-            return RedirectToAction("List","Products");
+        if (p.ProductId == 0)
+        {
+            _dbContextWrapper.CreateProduct(p).GetAwaiter().GetResult();
+            return RedirectToAction("List", "Products");
+        }
+        _dbContextWrapper.UpdateProduct(p);
         return RedirectToAction("AddUpdateProduct","Products", new { productId = p.ProductId });
     }
 }

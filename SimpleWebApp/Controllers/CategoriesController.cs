@@ -1,8 +1,6 @@
-﻿using System.Buffers.Text;
-using Microsoft.AspNetCore.Mvc;
-using SimpleWebApp.Helpers;
-using SimpleWebApp.Models;
-using SimpleWebApp.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleWebApp.Core.Helpers;
+using SimpleWebApp.Core.Models;
 using SmartBreadcrumbs.Nodes;
 
 namespace SimpleWebApp.Controllers;
@@ -31,7 +29,7 @@ public class CategoriesController : Controller
 
         if (!HttpContext.Items.ContainsKey("imgString"))
         {
-            foreach (var cat in _dbContextWrapper.GetCategoriesFromDb())
+            foreach (var cat in _dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult())
             {
                 HttpContext.Items[$"imgString_{cat.CategoryId.ToString()}"] =
                     _dbContextWrapper.GetCategoryFromDb(cat.CategoryId)
@@ -41,7 +39,7 @@ public class CategoriesController : Controller
             }
         }
 
-        return View(_dbContextWrapper.GetCategoriesFromDb());
+        return View(_dbContextWrapper.GetCategoriesFromDb().GetAwaiter().GetResult());
     }
     
     [HttpGet]
@@ -99,7 +97,7 @@ public class CategoriesController : Controller
             return View(imageId);
         }
 
-        if (!_dbContextWrapper.AddUpdateCategory(new Category(imageId, file)).GetAwaiter().GetResult())
+        if (!_dbContextWrapper.UpdateCategory(new Category(imageId, file)).GetAwaiter().GetResult())
             ModelState.AddModelError("File", "Unsuccessful updating of picture");
         ;
 

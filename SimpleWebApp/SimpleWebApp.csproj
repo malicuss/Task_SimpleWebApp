@@ -11,6 +11,12 @@
         <InternalsVisibleTo Include="TestProject" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <!-- use /p:UseWebServer to build for apach or nginx  -->
+        <DefineConstants Condition="'$(UseWebServer)' == 'Apach'">Apach</DefineConstants>
+        <DefineConstants Condition="'$(UseWebServer)' == 'Nginx'">Nginx</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
       <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
@@ -25,6 +31,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SimpleWebApp.Core\SimpleWebApp.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Publish" />
     </ItemGroup>
 
 </Project>

@@ -18,6 +18,7 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
 builder.Host.UseSerilog();
@@ -58,12 +59,17 @@ if (!app.Environment.IsDevelopment() ||
 
 app.Logger.Log(LogLevel.Information,Environment.CurrentDirectory);
 
+
+#if Apach || Nginx
+
+#else
 app.UseHttpsRedirection();
+
+#endif
+
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
-
 app.UseRouting();
-
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",

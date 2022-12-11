@@ -46,6 +46,21 @@ builder.Services.AddSwaggerGen(x =>
 });
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();
+
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddWebOptimizer(minifyJavaScript:false,minifyCss:false);
+else
+    builder.Services.AddWebOptimizer(pipe =>
+    {
+        // minification
+        pipe.MinifyJsFiles("js/site.js");
+        pipe.MinifyCssFiles("css/**/*.css");
+        
+        // bundling
+
+        pipe.AddCssBundle("/css/bundle.css", "/css/**/*.css");
+    });
+
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
@@ -60,6 +75,7 @@ if (!app.Environment.IsDevelopment() ||
 
 app.Logger.Log(LogLevel.Information,Environment.CurrentDirectory);
 
+app.UseWebOptimizer();
 
 #if Apach || Nginx
 

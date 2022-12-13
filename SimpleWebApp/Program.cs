@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -47,6 +48,20 @@ builder.Services.AddSwaggerGen(x =>
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();
 
+#if Apach || Nginx
+builder.WebHost.ConfigureKestrel((c, so) =>
+{
+    serverOptions.Listen(IPAddress.Any, 8000, listenOptions =>
+    {
+        listenOptions.UseConnectionLogging();
+    });
+    so.Listen(IPAddress.Loopback, 5000);
+    so.Listen(IPAddress.Loopback, 5001, lo =>
+    {
+        //lo.UseHttps("MySertificate.pfx", "MySertificatePassword");
+    });
+});
+#endif
 if (builder.Environment.IsDevelopment())
     builder.Services.AddWebOptimizer(minifyJavaScript:false,minifyCss:false);
 else

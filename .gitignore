@@ -14,7 +14,8 @@
 /IO.Swagger/obj/
 /TestProject/bin/
 /TestProject/obj/
-/packages
+/packages/
+/Release/
 /SimpleWebApp.Core/wwwroot/lib/
 .idea
 .vs

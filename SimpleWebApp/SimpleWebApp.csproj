@@ -11,6 +11,12 @@
         <InternalsVisibleTo Include="TestProject" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <!-- use /p:UseWebServer to build for apach or nginx  -->
+        <DefineConstants Condition="'$(UseWebServer)' == 'Apach'">Apach</DefineConstants>
+        <DefineConstants Condition="'$(UseWebServer)' == 'Nginx'">Nginx</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
       <PackageReference Include="FileCache" Version="3.3.0" />
       <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.11" />
@@ -23,6 +29,8 @@
       </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
+      <PackageReference Include="LigerShark.WebOptimizer.Core" Version="3.0.372" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.11" />
       <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
       <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
       <PackageReference Include="SmartBreadcrumbs" Version="3.6.1" />
@@ -36,6 +44,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SimpleWebApp.Core\SimpleWebApp.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Publish" />
     </ItemGroup>
 
 </Project>

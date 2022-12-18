@@ -1,0 +1,1 @@
+dotnet publish ..\SimpleWebApp.csproj -o ..\..\Release\win_64 -c Release -r win-x64 --self-contained true  

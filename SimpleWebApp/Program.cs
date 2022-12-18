@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -17,6 +18,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
@@ -46,6 +48,36 @@ builder.Services.AddSwaggerGen(x =>
 builder.Services.AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddMvcCore().AddApiExplorer();
 
+#if Apach || Nginx
+builder.WebHost.ConfigureKestrel((c, so) =>
+{
+    serverOptions.Listen(IPAddress.Any, 8000, listenOptions =>
+    {
+        listenOptions.UseConnectionLogging();
+    });
+    so.Listen(IPAddress.Loopback, 5000);
+    so.Listen(IPAddress.Loopback, 5001, lo =>
+    {
+        //lo.UseHttps("MySertificate.pfx", "MySertificatePassword");
+    });
+});
+#endif
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddWebOptimizer(minifyJavaScript:false,minifyCss:false);
+else
+    builder.Services.AddWebOptimizer(pipe =>
+    {
+        // minification
+        pipe.MinifyJsFiles("js/site.js");
+        pipe.MinifyCssFiles("css/**/*.css");
+        
+        // bundling
+
+        pipe.AddCssBundle("/css/bundle.css", "/css/**/*.css");
+    });
+
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment() ||
@@ -58,12 +90,18 @@ if (!app.Environment.IsDevelopment() ||
 
 app.Logger.Log(LogLevel.Information,Environment.CurrentDirectory);
 
+app.UseWebOptimizer();
+
+#if Apach || Nginx
+
+#else
 app.UseHttpsRedirection();
+
+#endif
+
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
-
 app.UseRouting();
-
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",

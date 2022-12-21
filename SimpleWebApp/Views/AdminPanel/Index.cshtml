@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityUser>
+@{
+    Layout = "_Layout";
+}
+<table class="custom">
+    <th>@nameof(IdentityUser.Id)</th>
+    <th>@nameof(IdentityUser.UserName)</th>
+    <th>@nameof(IdentityUser.Email)</th>
+    <th>@nameof(IdentityUser.EmailConfirmed)</th>
+    @foreach (IdentityUser i  in Model)
+    {
+        <tr>
+            <td class="custom">@i.Id</td>
+            <td class="custom">@i.UserName</td>
+            <td class="custom">@i.Email</td>
+            <td class="custom">@i.EmailConfirmed</td>
+        </tr>
+    }
+</table>

@@ -8,6 +8,8 @@ using SimpleWebApp.Core.Middleware;
 using SimpleWebApp.Core.Models;
 using SimpleWebApp.Core.Services;
 using SmartBreadcrumbs.Extensions;
+using Microsoft.AspNetCore.Identity;
+using SimpleWebApp;
 
 //configuring Serilog
 Log.Logger = new LoggerConfiguration()
@@ -19,12 +21,16 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 Log.Information(ConfigLoggingHelper.GetConfigString(builder.Configuration));
 
 builder.Host.UseSerilog();
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<SecurityContext>(opt=>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<SecurityContext>().AddDefaultUI().AddDefaultTokenProviders();
+builder.Host.UseSerilog();
 builder.Services.AddScoped<IDbContextWrapper, DbContextWrapper>();
 builder.Services.AddSingleton<ICacher, ImageCacher>();
 builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Options));
@@ -39,6 +45,40 @@ builder.Services.AddBreadcrumbs(Assembly.GetExecutingAssembly(), opt =>
     opt.OlClasses = "breadcrumb";
     opt.LiClasses = "breadcrumb-item";
     opt.ActiveLiClasses = "breadcrumb-item active";
+});
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdministratorRole",
+        policy => policy.RequireRole("Administrator"));
 });
 
 builder.Services.AddSwaggerGen(x =>
@@ -80,6 +120,26 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
+using (var scoped = app.Services.CreateScope())
+{
+    var serviceProvider = scoped.ServiceProvider;
+    var context = serviceProvider.GetRequiredService<SecurityContext>();
+    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var adminRole = new IdentityRole { Name = "Administrator", NormalizedName = "ADMINISTRATOR" };
+
+    if (!await roleManager.RoleExistsAsync(adminRole.Name))
+    {
+        await context.Roles.AddAsync(adminRole);
+        await roleManager.CreateAsync(adminRole);
+        // creating default admin user;
+        var adminUser = new IdentityUser { UserName = "sa@domain.com", Email = "sa@domain.com", NormalizedUserName = "sa@domain.com".ToUpper(),EmailConfirmed = true};
+        await userManager.CreateAsync(adminUser, "123Qwert!");
+        await userManager.AddToRoleAsync(adminUser, adminRole.Name);
+    }
+}
+
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment() ||
     !app.Configuration.GetValue<bool>("ExceptionHandlingDev"))
 {
@@ -102,10 +162,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 app.UseRouting();
+app.UseAuthentication();;
 app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
+
 app.UseMiddleware<ImageCache>();
 
 app.UseSwagger();
